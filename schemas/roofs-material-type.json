@@ -1,0 +1,37 @@
+[
+    {
+        "label": "Asphalt",
+        "src": "https://uprisun-daniilr.github.io/solar-wiki-formio/images/roofs-material-type/asphalt.svg",
+        "value": "asphalt"
+    },
+    {
+        "label": "Clay",
+        "src": "https://uprisun-daniilr.github.io/solar-wiki-formio/images/roofs-material-type/clay.svg",
+        "value": "clay"
+    },
+    {
+        "label": "Concrete",
+        "src": "https://uprisun-daniilr.github.io/solar-wiki-formio/images/roofs-material-type/concrete.svg",
+        "value": "concrete"
+    },
+    {
+        "label": "Copper",
+        "src": "https://uprisun-daniilr.github.io/solar-wiki-formio/images/roofs-material-type/copper.svg",
+        "value": "copper"
+    },
+    {
+        "label": "Metal",
+        "src": "https://uprisun-daniilr.github.io/solar-wiki-formio/images/roofs-material-type/metal.svg",
+        "value": "metal"
+    },
+    {
+        "label": "Slate",
+        "src": "https://uprisun-daniilr.github.io/solar-wiki-formio/images/roofs-material-type/slate.svg",
+        "value": "slate"
+    },
+    {
+        "label": "Wood",
+        "src": "https://uprisun-daniilr.github.io/solar-wiki-formio/images/roofs-material-type/wood.svg",
+        "value": "wood"
+    }
+]

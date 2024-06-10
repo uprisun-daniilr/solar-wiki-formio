@@ -1,0 +1,22 @@
+[
+    {
+        "label": "Flat",
+        "src": "https://uprisun-daniilr.github.io/solar-wiki-formio/images/roofs-steep/flat.svg",
+        "value": "flat"
+    },
+    {
+        "label": "Low",
+        "src": "https://uprisun-daniilr.github.io/solar-wiki-formio/images/roofs-steep/low.svg",
+        "value": "low"
+    },
+    {
+        "label": "Moderate",
+        "src": "https://uprisun-daniilr.github.io/solar-wiki-formio/images/roofs-steep/moderate.svg",
+        "value": "moderate"
+    },
+    {
+        "label": "Steep",
+        "src": "https://uprisun-daniilr.github.io/solar-wiki-formio/images/roofs-steep/steep.svg",
+        "value": "steep"
+    }
+]

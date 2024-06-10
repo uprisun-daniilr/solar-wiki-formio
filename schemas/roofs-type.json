@@ -1,0 +1,17 @@
+[
+    {
+        "label": "Simple",
+        "src": "https://uprisun-daniilr.github.io/solar-wiki-formio/images/roofs-type/simple.svg",
+        "value": "simple"
+    },
+    {
+        "label": "Moderate",
+        "src": "https://uprisun-daniilr.github.io/solar-wiki-formio/images/roofs-type/moderate.svg",
+        "value": "moderate"
+    },
+    {
+        "label": "Complex",
+        "src": "https://uprisun-daniilr.github.io/solar-wiki-formio/images/roofs-type/complex.svg",
+        "value": "complex"
+    }
+]
