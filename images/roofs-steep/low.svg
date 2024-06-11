@@ -1,1 +1,14 @@
-<svg height="120" width="120" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill-rule="nonzero"><path d="m59.95 46.73-41.47 19.55v45.07h83.04v-45.02z" fill="#f6f6f6"/><path d="m50 76.76h20v34.6h-20z" fill="#dcdcdc"/><path d="m59.95 43.02-49.2 23.21 2.67 3.81 46.53-21.95 46.53 21.95 2.67-3.81z" fill="#fff"/><path d="m59.95 36.98-49.2 23.21 2.67 5.81 46.53-21.95 46.53 21.95 2.67-5.81z" fill="#c5e2e6"/></g><path d="m9.9 60.53 50.05-23.55 50.15 23.66" stroke="#6eb7c2" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="m10.85 111.35h98.3" stroke="#dcdcdc" stroke-linecap="round" stroke-width="2"/><path d="m77.81 77.42h16.76v19.37h-16.76z" fill="#dcdcdc" fill-rule="nonzero"/><path d="m86.19 77.42v19.37m8.38-9.69h-16.76" stroke="#f6f6f6" stroke-linecap="square" stroke-width="3"/><path d="m25.43 77.42h16.76v19.37h-16.76z" fill="#dcdcdc" fill-rule="nonzero"/><path d="m33.81 77.42v19.37m8.38-9.69h-16.76" stroke="#f6f6f6" stroke-linecap="square" stroke-width="3"/><path d="m46.1 70.48c0-7.677 6.223-13.9 13.9-13.9s13.9 6.223 13.9 13.9" fill="#dcdcdc" fill-rule="nonzero"/><path d="m51 56.62 9 13.86m9.1-13.86-9 13.86" stroke="#f6f6f6" stroke-linecap="square" stroke-width="3"/></g></svg>
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M59.95 46.73L18.48 66.28V111.35H101.52V66.33L59.95 46.73Z" fill="#F5F5F5"/>
+<path d="M50 76.76H70V111.36H50V76.76Z" fill="#E0E0E0"/>
+<path d="M59.95 43.02L10.75 66.23L13.42 70.04L59.95 48.09L106.48 70.04L109.15 66.23L59.95 43.02Z" fill="white"/>
+<path d="M59.95 36.98L10.75 60.19L13.42 66L59.95 44.05L106.48 66L109.15 60.19L59.95 36.98Z" fill="#BBCAE8"/>
+<path d="M9.90002 60.53L59.95 36.98L110.1 60.64" stroke="#1B4EB2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10.85 111.35H109.15" stroke="#E0E0E0" stroke-width="2" stroke-linecap="round"/>
+<path d="M77.81 77.42H94.57V96.79H77.81V77.42Z" fill="#E0E0E0"/>
+<path d="M86.19 77.42V96.79M94.57 87.1H77.81" stroke="#F5F5F5" stroke-width="3" stroke-linecap="square"/>
+<path d="M25.4301 77.42H42.1901V96.79H25.4301V77.42Z" fill="#E0E0E0"/>
+<path d="M33.8101 77.42V96.79M42.1901 87.1H25.4301" stroke="#F5F5F5" stroke-width="3" stroke-linecap="square"/>
+<path d="M46.1 70.48C46.1 62.803 52.323 56.58 60 56.58C67.677 56.58 73.9 62.803 73.9 70.48" fill="#E0E0E0"/>
+<path d="M51 56.62L60 70.48M69.1 56.62L60.1 70.48" stroke="#F5F5F5" stroke-width="3" stroke-linecap="square"/>
+</svg>
