@@ -1,7 +1,7 @@
 export class UtilityProviderSelectComponent extends Formio.Components.components
   .select {
   static schema(...extend) {
-    return SelectComponent.schema(
+    return Formio.Components.components.select.schema(
       {
         type: "utilityProviderSelect",
         label: "Utility provider select",
@@ -44,7 +44,7 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
 
   static initialize() {
     UtilityProviderSelectComponent.editForm = (...args) => {
-      const editForm = Formio.Components.components.address.editForm(...args);
+      const editForm = Formio.Components.components.select.editForm(...args);
       console.log(editForm.components);
       // const tabs = editForm.components.find(({ type }) => type === "tabs");
 
