@@ -59,13 +59,6 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
             },
           ],
         },
-        {
-          key: "display",
-          components: Formio.Components.components.select
-            .editForm()
-            .components.find((component) => component.key === "display")
-            .components,
-        },
       ],
       ...extend
     );
