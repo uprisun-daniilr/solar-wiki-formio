@@ -1,3 +1,5 @@
+import { getRoot } from "./helper";
+
 export class UtilityProviderSelectComponent extends Formio.Components.components
   .select {
   static schema(...extend) {
@@ -28,24 +30,28 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
   }
 
   loadItems(url, search, headers, options, method) {
-    const form = this.root.root;
+    const form = getRoot(this);
+
     const address = form.getComponent("address");
-    const addressTab = form.getComponent("addressTab");
-    console.log("address: ", address);
-    console.log("addressTab: ", addressTab);
 
     if (!address) return [];
 
     const addressValue = address.getValue();
-    console.log("addressValue: ", addressValue);
 
-    const lon = 0;
-    const lat = 0;
+    const location = addressValue?.data?.address?.geometry?.location;
+
+    if (!location) {
+      return;
+    }
+
+    const { lat, lng } = location;
+
+    console.log("location: ", { lat, lng });
 
     const api_key = this.component.api_key;
 
     if (lat && lon) {
-      url = `https://developer.nrel.gov/api/utility_rates/v3.json?api_key=${api_key}&lat=${lat}&lon=${lon}`;
+      url = `https://developer.nrel.gov/api/utility_rates/v3.json?api_key=${api_key}&lat=${lat}&lon=${lng}`;
     }
 
     return super.loadItems(url, search, headers, options, method);
