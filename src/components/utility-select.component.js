@@ -50,7 +50,7 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
     let { lat, lng } = location;
 
     lat = typeof lat === "function" ? lat() : lat;
-    lng = typeof lat === "function" ? lng() : lng;
+    lng = typeof lng === "function" ? lng() : lng;
 
     console.log({ lat, lng });
     const api_key = this.component.api_key;
