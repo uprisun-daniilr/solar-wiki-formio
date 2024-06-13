@@ -53,9 +53,10 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
     lng = typeof lng === "function" ? lng() : lng;
 
     const api_key = this.component.api_key;
+    const radius = this.component.radius || 0;
 
     if (lat && lng) {
-      url = `https://developer.nrel.gov/api/utility_rates/v3.json?api_key=${api_key}&lat=${lat}&lon=${lng}`;
+      url = `https://developer.nrel.gov/api/utility_rates/v3.json?api_key=${api_key}&lat=${lat}&lon=${lng}&radius=${radius}`;
     }
 
     return super.loadItems(url, search, headers, options, method);
@@ -75,6 +76,19 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
               weight: 20,
               placeholder: "Enter your API key",
               tooltip: "The API key for the data source",
+            },
+          ],
+        },
+        {
+          key: "data",
+          components: [
+            {
+              type: "textfield",
+              input: true,
+              label: "Radius",
+              key: "radius",
+              weight: 20,
+              placeholder: "Enter search radius from 0 to 200",
             },
           ],
         },
