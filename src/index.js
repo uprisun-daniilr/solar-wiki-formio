@@ -7,9 +7,11 @@ import { UtilityProviderSelectComponent } from "./components/utility-select.comp
 
     Formio.Providers.addProvider("address", "google", GoogleMapProvider);
 
+    console.log(Formio.Components);
     Formio.Components.addComponent(
       "utilityproviderselect",
       UtilityProviderSelectComponent
     );
+    console.log(Formio.Components);
   });
 })();
