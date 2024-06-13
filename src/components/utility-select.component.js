@@ -20,7 +20,7 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
   static get builderInfo() {
     return {
       title: "Utility provider select",
-      group: "basic",
+      group: "advanced",
       icon: "fa fa-list",
       weight: 70,
       schema: UtilityProviderSelectComponent.schema(),
@@ -42,30 +42,31 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
     return super.loadItems(url, search, headers, options, method);
   }
 
-  static initialize() {
-    UtilityProviderSelectComponent.editForm = (...args) => {
-      const editForm = Formio.Components.components.select.editForm(...args);
-      console.log(editForm.components);
-      // const tabs = editForm.components.find(({ type }) => type === "tabs");
-
-      // const provider = tabs.components.find(({ key }) => key === "provider");
-
-      // provider.components.push({
-      //   key: "data",
-      //   components: [
-      //     {
-      //       type: "textfield",
-      //       input: true,
-      //       label: "API Key",
-      //       key: "api_key",
-      //       weight: 20,
-      //       placeholder: "Enter your API key",
-      //       tooltip: "The API key for the data source",
-      //     },
-      //   ],
-      // });
-
-      return editForm;
-    };
+  static editForm(...extend) {
+    return editForm(
+      [
+        {
+          key: "data",
+          components: [
+            {
+              type: "textfield",
+              input: true,
+              label: "API Key",
+              key: "api_key",
+              weight: 20,
+              placeholder: "Enter your API key",
+              tooltip: "The API key for the data source",
+            },
+          ],
+        },
+        {
+          key: "display",
+          components: SelectComponent.editForm().components.find(
+            (component) => component.key === "display"
+          ).components,
+        },
+      ],
+      ...extend
+    );
   }
 }
