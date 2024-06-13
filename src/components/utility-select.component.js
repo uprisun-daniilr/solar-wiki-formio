@@ -43,7 +43,7 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
   }
 
   static editForm(...extend) {
-    return editForm(
+    return Formio.Components.components.select.editForm(
       [
         {
           key: "data",
