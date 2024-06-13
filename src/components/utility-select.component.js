@@ -9,8 +9,9 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
         label: "Utility provider select",
         key: "utilityproviderselect",
         dataSrc: "url",
-        valueProperty: "value",
-        template: "<span>{{ item.label }}</span>",
+        valueProperty: "",
+        selectValues: "outputs.utility_info",
+        template: "<span>{{ item.utility_name }}</span>",
         data: {
           url: "",
         },
@@ -53,6 +54,10 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
     if (lat && lng) {
       url = `https://developer.nrel.gov/api/utility_rates/v3.json?api_key=${api_key}&lat=${lat()}&lon=${lng()}`;
     }
+
+    super
+      .loadItems(url, search, headers, options, method)
+      .then((items) => console.log(items));
 
     return super.loadItems(url, search, headers, options, method);
   }
