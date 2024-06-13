@@ -40,7 +40,9 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
 
     const addressValue = address.getValue();
 
-    const location = addressValue?.data?.address?.geometry?.location;
+    const location =
+      addressValue?.data?.address?.geometry?.location ||
+      addressValue?.geometry?.location;
 
     if (!location) {
       return;
