@@ -5,7 +5,7 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
       {
         type: "utilityProviderSelect",
         label: "Utility provider select",
-        key: "utilityProviderSelect",
+        key: "utilityproviderselect",
         dataSrc: "url",
         valueProperty: "value",
         template: "<span>{{ item.label }}</span>",
