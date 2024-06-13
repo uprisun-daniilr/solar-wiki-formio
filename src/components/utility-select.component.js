@@ -31,7 +31,6 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
   }
 
   loadItems(url, search, headers, options, method) {
-    console.log("loadItems");
     const form = getRoot(this);
 
     const address = form.getComponent("address");
@@ -48,12 +47,16 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
       return;
     }
 
-    const { lat, lng } = location;
+    let { lat, lng } = location;
 
+    lat = typeof lat === "function" ? lat() : lat;
+    lng = typeof lat === "function" ? lng() : lng;
+
+    console.log({ lat, lng });
     const api_key = this.component.api_key;
 
     if (lat && lng) {
-      url = `https://developer.nrel.gov/api/utility_rates/v3.json?api_key=${api_key}&lat=${lat()}&lon=${lng()}`;
+      url = `https://developer.nrel.gov/api/utility_rates/v3.json?api_key=${api_key}&lat=${lat}&lon=${lng}`;
     }
 
     return super.loadItems(url, search, headers, options, method);
