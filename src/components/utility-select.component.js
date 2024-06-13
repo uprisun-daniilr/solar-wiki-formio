@@ -3,7 +3,7 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
   static schema(...extend) {
     return Formio.Components.components.select.schema(
       {
-        type: "utilityProviderSelect",
+        type: "utilityproviderselect",
         label: "Utility provider select",
         key: "utilityproviderselect",
         dataSrc: "url",
