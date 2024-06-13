@@ -29,9 +29,13 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
 
   loadItems(url, search, headers, options, method) {
     const form = this.root;
-    console.log(form);
-    const lat = form.getComponent("latitude").getValue();
-    const lon = form.getComponent("longitude").getValue();
+    const address = form.getComponent("address").getValue();
+    console.log(address);
+
+    if (!address) return [];
+
+    const lon = 0;
+    const lat = 0;
 
     const api_key = this.component.api_key;
 
