@@ -28,7 +28,7 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
   }
 
   loadItems(url, search, headers, options, method) {
-    const form = this.root;
+    const form = this.root.root;
     const address = form.getComponent("address");
     const addressTab = form.getComponent("addressTab");
     console.log("address: ", address);
