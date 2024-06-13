@@ -1,7 +1,7 @@
 import { GoogleMapProvider } from "./components/google-map.provider";
 import { UtilityProviderSelectComponent } from "./components/utility-select.component";
 
-window.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
   console.log("Custom components was loaded.");
   GoogleMapProvider.initialize();
 
