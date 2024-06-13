@@ -47,17 +47,11 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
 
     const { lat, lng } = location;
 
-    console.log("location: ", { lat, lng });
-
     const api_key = this.component.api_key;
 
     if (lat && lng) {
       url = `https://developer.nrel.gov/api/utility_rates/v3.json?api_key=${api_key}&lat=${lat()}&lon=${lng()}`;
     }
-
-    super
-      .loadItems(url, search, headers, options, method)
-      .then((items) => console.log(items));
 
     return super.loadItems(url, search, headers, options, method);
   }
