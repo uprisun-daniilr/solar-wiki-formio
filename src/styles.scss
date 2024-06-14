@@ -54,7 +54,6 @@
     font-weight: 500;
     box-shadow: none;
     padding: 13px 24px;
-    background-color: #1B4EB2;
     color: #fff;
     transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
     outline: 0;
@@ -68,10 +67,27 @@
     min-width: 160px;
 
     :hover {
+        text-decoration: none;
+        box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+    }
+}
+
+.formio-button-remove-row {
+    min-width: auto;
+    font-size: 24px;
+    padding: 12px 16px;
+    margin: 0;
+}
+
+.btn-primary {
+    background-color: #1B4EB2;
+
+    :hover {
         background-color: #12367C;
         text-decoration: none;
         box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
     }
+
 }
 
 .formio-component-submit.form-group {
