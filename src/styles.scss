@@ -54,8 +54,6 @@
     font-weight: 500;
     box-shadow: none;
     padding: 13px 24px;
-    color: #fff;
-    transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
     outline: 0;
     border: 0;
     justify-content: center;
@@ -79,8 +77,13 @@
     margin: 0;
 }
 
+.formio-component-modal-wrapper-form>div {
+    display: flex;
+}
+
 .btn-primary {
     background-color: #1B4EB2;
+    color: #fff;
 
     :hover {
         background-color: #12367C;
