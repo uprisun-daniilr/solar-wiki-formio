@@ -228,7 +228,7 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
       country,
       location,
       streetNumber,
-      fullAddress: place.formattedPlace,
+      formattedPlace: place.formattedPlace,
     };
   }
   static initialize() {
