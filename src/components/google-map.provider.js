@@ -167,7 +167,7 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
     });
   }
 
-  formatAddress(place, autocomplete) {
+  formatAddress = (place, autocomplete) => {
     place.formattedPlace = _.get(
       autocomplete,
       "gm_accessors_.place.se.formattedPrediction",
@@ -230,7 +230,7 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
       streetNumber,
       formattedPlace: place.formattedPlace,
     };
-  }
+  };
   static initialize() {
     const addressEditForm = Formio.Components.components.address.editForm;
 
