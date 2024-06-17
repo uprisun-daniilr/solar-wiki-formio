@@ -143,6 +143,17 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
       autocomplete.addListener("place_changed", () => {
         const place = this.filterPlace(autocomplete.getPlace());
 
+        const location = place.geometry
+          ? {
+              lat: place.geometry.location.lat(),
+              lng: place.geometry.location.lng(),
+            }
+          : null;
+
+        if (isMapEnabled) {
+          this.updateMap(location);
+        }
+
         // Call the onSelectAddress function with the structured address
         onSelectAddress(this.formatAddress(place, autocomplete), elem, index);
       });
@@ -170,6 +181,13 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
     let city = "";
     let street = "";
     let streetNumber = "";
+
+    const location = place.geometry
+      ? {
+          lat: place.geometry.location.lat(),
+          lng: place.geometry.location.lng(),
+        }
+      : null;
 
     // Extract address components
     if (place.address_components) {
@@ -203,13 +221,14 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
 
     // Construct the structured address object
     return {
-      country,
       zip,
-      state,
       city,
+      state,
       street,
+      country,
+      location,
       streetNumber,
-      formattedPlace: place.formattedPlace,
+      fullAddress: place.formattedPlace,
     };
   }
   static initialize() {
