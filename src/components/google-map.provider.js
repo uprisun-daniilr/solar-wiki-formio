@@ -58,7 +58,10 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
 
           const input = this.element;
           if (input) {
-            this.onSelectAddress(this.formatAddress(address), this.element);
+            this.onSelectAddress(
+              this.formatAddress(address, this.autocomplete),
+              this.element
+            );
             this.updateMap({
               lat,
               lng,
@@ -141,7 +144,7 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
         const place = this.filterPlace(autocomplete.getPlace());
 
         // Call the onSelectAddress function with the structured address
-        onSelectAddress(this.formatAddress(place), elem, index);
+        onSelectAddress(this.formatAddress(place, autocomplete), elem, index);
       });
 
       if (isMapEnabled) {
@@ -153,7 +156,7 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
     });
   }
 
-  formatAddress(place) {
+  formatAddress(place, autocomplete) {
     place.formattedPlace = _.get(
       autocomplete,
       "gm_accessors_.place.se.formattedPrediction",
