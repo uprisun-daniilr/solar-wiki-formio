@@ -58,7 +58,7 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
 
           const input = this.element;
           if (input) {
-            this.onSelectAddress(address, this.element);
+            this.onSelectAddress(this.formatAddress(address), this.element);
             this.updateMap({
               lat,
               lng,
@@ -139,62 +139,9 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
 
       autocomplete.addListener("place_changed", () => {
         const place = this.filterPlace(autocomplete.getPlace());
-        place.formattedPlace = _.get(
-          autocomplete,
-          "gm_accessors_.place.se.formattedPrediction",
-          place[this.alternativeDisplayValueProperty]
-        );
-
-        // Initialize the address components
-        let country = "";
-        let zip = "";
-        let state = "";
-        let city = "";
-        let street = "";
-
-        // Extract address components
-        if (place.address_components) {
-          place.address_components.forEach((component) => {
-            const types = component.types;
-            if (types.includes("country")) {
-              country = component.long_name;
-            }
-
-            if (types.includes("postal_code")) {
-              zip = component.long_name;
-            }
-
-            if (types.includes("administrative_area_level_1")) {
-              state = component.long_name;
-            }
-
-            if (types.includes("locality")) {
-              city = component.long_name;
-            }
-
-            if (types.includes("route")) {
-              street = component.long_name;
-            }
-
-            if (types.includes("street_number")) {
-              streetNumber = component.long_name;
-            }
-          });
-        }
-
-        // Construct the structured address object
-        const structuredAddress = {
-          country,
-          zip,
-          state,
-          city,
-          street,
-          streetNumber,
-          formattedPlace: place.formattedPlace,
-        };
 
         // Call the onSelectAddress function with the structured address
-        onSelectAddress(structuredAddress, elem, index);
+        onSelectAddress(this.formatAddress(place), elem, index);
       });
 
       if (isMapEnabled) {
@@ -204,6 +151,63 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
         });
       }
     });
+  }
+
+  formatAddress(place) {
+    place.formattedPlace = _.get(
+      autocomplete,
+      "gm_accessors_.place.se.formattedPrediction",
+      place[this.alternativeDisplayValueProperty]
+    );
+
+    // Initialize the address components
+    let country = "";
+    let zip = "";
+    let state = "";
+    let city = "";
+    let street = "";
+    let streetNumber = "";
+
+    // Extract address components
+    if (place.address_components) {
+      place.address_components.forEach((component) => {
+        const types = component.types;
+        if (types.includes("country")) {
+          country = component.long_name;
+        }
+
+        if (types.includes("postal_code")) {
+          zip = component.long_name;
+        }
+
+        if (types.includes("administrative_area_level_1")) {
+          state = component.long_name;
+        }
+
+        if (types.includes("locality")) {
+          city = component.long_name;
+        }
+
+        if (types.includes("route")) {
+          street = component.long_name;
+        }
+
+        if (types.includes("street_number")) {
+          streetNumber = component.long_name;
+        }
+      });
+    }
+
+    // Construct the structured address object
+    return {
+      country,
+      zip,
+      state,
+      city,
+      street,
+      streetNumber,
+      formattedPlace: place.formattedPlace,
+    };
   }
   static initialize() {
     const addressEditForm = Formio.Components.components.address.editForm;
