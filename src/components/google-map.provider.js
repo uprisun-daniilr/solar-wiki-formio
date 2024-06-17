@@ -159,17 +159,25 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
             if (types.includes("country")) {
               country = component.long_name;
             }
+
             if (types.includes("postal_code")) {
               zip = component.long_name;
             }
+
             if (types.includes("administrative_area_level_1")) {
               state = component.long_name;
             }
+
             if (types.includes("locality")) {
               city = component.long_name;
             }
+
             if (types.includes("route")) {
               street = component.long_name;
+            }
+
+            if (types.includes("street_number")) {
+              streetNumber = component.long_name;
             }
           });
         }
