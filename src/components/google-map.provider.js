@@ -58,6 +58,12 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
 
           const input = this.element;
           if (input) {
+            address.formattedPlace = _.get(
+              this.autocomplete,
+              "gm_accessors_.place.se.formattedPrediction",
+              address[this.alternativeDisplayValueProperty]
+            );
+
             this.onSelectAddress(
               this.formatAddress(address, this.autocomplete),
               this.element
@@ -154,6 +160,12 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
           this.updateMap(location);
         }
 
+        place.formattedPlace = _.get(
+          autocomplete,
+          "gm_accessors_.place.se.formattedPrediction",
+          place[this.alternativeDisplayValueProperty]
+        );
+
         // Call the onSelectAddress function with the structured address
         onSelectAddress(this.formatAddress(place, autocomplete), elem, index);
       });
@@ -168,12 +180,6 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
   }
 
   formatAddress = (place, autocomplete) => {
-    place.formattedPlace = _.get(
-      autocomplete,
-      "gm_accessors_.place.se.formattedPrediction",
-      place[this.alternativeDisplayValueProperty]
-    );
-
     // Initialize the address components
     let country = "";
     let zip = "";
