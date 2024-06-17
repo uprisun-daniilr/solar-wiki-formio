@@ -229,6 +229,7 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
 
     // Construct the structured address object
     return {
+      ...address,
       zip,
       city,
       state,
