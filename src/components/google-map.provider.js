@@ -139,24 +139,53 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
 
       autocomplete.addListener("place_changed", () => {
         const place = this.filterPlace(autocomplete.getPlace());
-
-        const location = place.geometry
-          ? {
-              lat: place.geometry.location.lat(),
-              lng: place.geometry.location.lng(),
-            }
-          : null;
-
-        if (isMapEnabled) {
-          this.updateMap(location);
-        }
-
         place.formattedPlace = _.get(
           autocomplete,
           "gm_accessors_.place.se.formattedPrediction",
           place[this.alternativeDisplayValueProperty]
         );
-        onSelectAddress(place, elem, index);
+
+        // Initialize the address components
+        let country = "";
+        let zip = "";
+        let state = "";
+        let city = "";
+        let street = "";
+
+        // Extract address components
+        if (place.address_components) {
+          place.address_components.forEach((component) => {
+            const types = component.types;
+            if (types.includes("country")) {
+              country = component.long_name;
+            }
+            if (types.includes("postal_code")) {
+              zip = component.long_name;
+            }
+            if (types.includes("administrative_area_level_1")) {
+              state = component.long_name;
+            }
+            if (types.includes("locality")) {
+              city = component.long_name;
+            }
+            if (types.includes("route")) {
+              street = component.long_name;
+            }
+          });
+        }
+
+        // Construct the structured address object
+        const structuredAddress = {
+          country,
+          zip,
+          state,
+          city,
+          street,
+          formattedPlace: place.formattedPlace,
+        };
+
+        // Call the onSelectAddress function with the structured address
+        onSelectAddress(structuredAddress, elem, index);
       });
 
       if (isMapEnabled) {
