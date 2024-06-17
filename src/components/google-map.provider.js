@@ -1,3 +1,5 @@
+import { deepGet } from "./helper";
+
 export class GoogleMapProvider extends Formio.Providers.providers.address
   .google {
   constructor(...props) {
@@ -58,7 +60,7 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
 
           const input = this.element;
           if (input) {
-            address.formattedPlace = _.get(
+            address.formattedPlace = deepGet(
               this.autocomplete,
               "gm_accessors_.place.se.formattedPrediction",
               address[this.alternativeDisplayValueProperty]
@@ -160,7 +162,7 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
           this.updateMap(location);
         }
 
-        place.formattedPlace = _.get(
+        place.formattedPlace = deepGet(
           autocomplete,
           "gm_accessors_.place.se.formattedPrediction",
           place[this.alternativeDisplayValueProperty]
