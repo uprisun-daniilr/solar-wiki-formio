@@ -189,6 +189,7 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
           state,
           city,
           street,
+          streetNumber,
           formattedPlace: place.formattedPlace,
         };
 
