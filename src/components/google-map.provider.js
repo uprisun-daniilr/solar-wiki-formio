@@ -185,7 +185,12 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
   }
 
   fetchSolarData() {
+    if (!this.marker) return;
+
     const apiKey = this.options.params.key;
+    const lat = this.marker.position.lat();
+    const lng = this.marker.position.lng();
+
     const url = `https://developer.nrel.gov/api/utility_rates/v3.json?api_key=${apiKey}&lat=${lat}&lon=${lng}`;
 
     fetch(url)
