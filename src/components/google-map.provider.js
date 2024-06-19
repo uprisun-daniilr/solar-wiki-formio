@@ -190,8 +190,7 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
     const apiKey = this.options.params.key;
     const lat = this.marker.position.lat();
     const lng = this.marker.position.lng();
-
-    const url = `https://developer.nrel.gov/api/utility_rates/v3.json?api_key=${apiKey}&lat=${lat}&lon=${lng}`;
+    const url = `https://maps.googleapis.com/maps/api/solar/overlay/json?location=${lat},${lng}&radius=3000&key=${apiKey}`;
 
     fetch(url)
       .then((response) => response.json())
