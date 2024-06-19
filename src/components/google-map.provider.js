@@ -126,6 +126,8 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
     this.onSelectAddress = onSelectAddress;
     this.element = elem;
 
+    console.log(this.element);
+
     const { defaultCenterLat, defaultCenterLng, isMapEnabled, defaultZoom } =
       this.options.params;
 
