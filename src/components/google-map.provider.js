@@ -132,7 +132,7 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
       this.options.params;
 
     const mapElement = document.createElement("div");
-    mapElement.className = ".google-map-address-container";
+    mapElement.className = "google-map-address-container";
     mapElement.style.height = "400px";
     mapElement.style["margin-top"] = "16px";
     mapElement.style.width = "100%";
@@ -143,7 +143,7 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
     console.log(elem.parentNode.parentNode.parentNode);
 
     if (isMapEnabled) {
-      elem.parentNode.insertBefore(mapElement, elem.nextSibling);
+      elem.parentNode.parentNode.appendChild(mapElement);
     }
 
     Formio.libraryReady(this.getLibraryName()).then(() => {
