@@ -138,9 +138,7 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
     mapElement.style.width = "100%";
     mapElement.style.background = "#eee";
 
-    console.log(elem.parentNode);
-    console.log(elem.parentNode.parentNode);
-    console.log(elem.parentNode.parentNode.parentNode);
+    console.log(this);
 
     if (isMapEnabled) {
       elem.parentNode.parentNode.parentNode.appendChild(mapElement);
