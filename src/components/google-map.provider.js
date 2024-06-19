@@ -193,6 +193,7 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
         this.overlaySolarData(data);
       })
       .catch((error) => {
