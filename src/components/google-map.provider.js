@@ -19,6 +19,7 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
       lng,
     });
     this.map.setCenter(this.marker.position);
+    this.fetchSolarData(lat, lng);
   }
 
   reverseGeocode(lat, lng) {
@@ -115,8 +116,10 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
 
       service.findPlaceFromQuery(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
-          this.map.setCenter(results[0].geometry.location);
-          this.marker.setPosition(results[0].geometry.location);
+          const location = results[0].geometry.location;
+          this.map.setCenter(location);
+          this.fetchSolarData(location.lat, location.lng);
+          this.marker.setPosition(location);
         }
       });
     }
@@ -125,8 +128,6 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
   attachAutocomplete(elem, index, onSelectAddress) {
     this.onSelectAddress = onSelectAddress;
     this.element = elem;
-
-    console.log(this.element);
 
     const { defaultCenterLat, defaultCenterLng, isMapEnabled, defaultZoom } =
       this.options.params;
@@ -182,6 +183,31 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
       }
     });
   }
+
+  fetchSolarData() {
+    const apiKey = this.options.params.key;
+    const url = `https://developer.nrel.gov/api/utility_rates/v3.json?api_key=${apiKey}&lat=${lat}&lon=${lng}`;
+
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        this.overlaySolarData(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching solar data:", error);
+      });
+  }
+
+  overlaySolarData = function (data) {
+    // Assuming data contains geoJSON or similar format
+    const solarLayer = new google.maps.Data();
+    solarLayer.addGeoJson(data);
+    solarLayer.setStyle({
+      fillColor: "orange",
+      strokeWeight: 1,
+    });
+    solarLayer.setMap(this.map);
+  };
 
   formatAddress = (place) => {
     // Initialize the address components
