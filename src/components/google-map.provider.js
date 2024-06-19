@@ -136,10 +136,7 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
     mapElement.style.background = "#eee";
 
     if (isMapEnabled) {
-      elem.parentNode.parentNode.parentNode.insertBefore(
-        mapElement,
-        elem.nextSibling
-      );
+      elem.parentNode.parentNode.insertBefore(mapElement, elem.nextSibling);
     }
 
     Formio.libraryReady(this.getLibraryName()).then(() => {
