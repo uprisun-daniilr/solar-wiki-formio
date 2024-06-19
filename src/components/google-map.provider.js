@@ -141,7 +141,7 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
     console.log(this);
 
     if (isMapEnabled) {
-      elem.parentNode.parentNode.parentNode.appendChild(mapElement);
+      elem.parentNode.parentNode.appendChild(mapElement);
     }
 
     Formio.libraryReady(this.getLibraryName()).then(() => {
