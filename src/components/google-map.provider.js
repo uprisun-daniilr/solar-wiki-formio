@@ -130,6 +130,7 @@ export class GoogleMapProvider extends Formio.Providers.providers.address
       this.options.params;
 
     const mapElement = document.createElement("div");
+    mapElement.className = ".google-map-address-container";
     mapElement.style.height = "400px";
     mapElement.style["margin-top"] = "16px";
     mapElement.style.width = "100%";
