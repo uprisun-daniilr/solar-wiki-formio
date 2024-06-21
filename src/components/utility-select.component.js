@@ -21,8 +21,8 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
   }
   init() {
     super.init();
-
-    this.onSetItems = (self, items) => {
+    console.log("init");
+    this.component.onSetItems = (self, items) => {
       console.log("onSetItems");
       items.push({ utility_name: "Other", id: "other" });
       console.log(items);
