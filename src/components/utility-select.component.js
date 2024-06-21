@@ -69,12 +69,6 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
     }
 
     return super.loadItems(url, search, headers, options, method);
-    // .then((items) => {
-    //   console.log({ items });
-    //   items.push({ utility_name: "Other", id: "other" });
-
-    //   return items;
-    // });
   }
 
   static editForm(...extend) {
