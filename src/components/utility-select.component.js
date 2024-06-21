@@ -59,14 +59,13 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
       url = `https://developer.nrel.gov/api/utility_rates/v3.json?api_key=${api_key}&lat=${lat}&lon=${lng}&radius=${radius}`;
     }
 
-    return super
-      .loadItems(url, search, headers, options, method)
-      .then((items) => {
-        console.log({ items });
-        items.push({ utility_name: "Other", id: "other" });
+    return super.loadItems(url, search, headers, options, method);
+    // .then((items) => {
+    //   console.log({ items });
+    //   items.push({ utility_name: "Other", id: "other" });
 
-        return items;
-      });
+    //   return items;
+    // });
   }
 
   static editForm(...extend) {
