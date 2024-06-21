@@ -19,7 +19,16 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
       ...extend
     );
   }
+  init() {
+    super.init();
 
+    this.onSetItems = (self, items) => {
+      console.log("onSetItems");
+      items.push({ utility_name: "Other", id: "other" });
+      console.log(items);
+      return items;
+    };
+  }
   static get builderInfo() {
     return {
       title: "Utility provider select",
@@ -66,11 +75,6 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
 
     //   return items;
     // });
-  }
-
-  onSetItems(self, items) {
-    console.log("onSetItems");
-    return items;
   }
 
   static editForm(...extend) {
