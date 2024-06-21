@@ -21,6 +21,7 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
   }
 
   setItems(items, fromSearch) {
+    console.log({ items });
     // Add the custom item
     items.push({ utility_name: "Other", id: "other" });
 
