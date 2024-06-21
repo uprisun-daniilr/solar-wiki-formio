@@ -19,16 +19,14 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
       ...extend
     );
   }
-  // init() {
-  //   super.init();
-  //   console.log("init");
-  //   this.component.onSetItems = (self, items) => {
-  //     console.log("onSetItems");
-  //     items.push({ utility_name: "Other", id: "other" });
-  //     console.log(items);
-  //     return items;
-  //   };
-  // }
+
+  setItems(items, fromSearch) {
+    // Add the custom item
+    items.push({ utility_name: "Other", id: "other" });
+
+    super.setItems(items, fromSearch);
+  }
+
   static get builderInfo() {
     return {
       title: "Utility provider select",
