@@ -68,6 +68,11 @@ export class UtilityProviderSelectComponent extends Formio.Components.components
     // });
   }
 
+  onSetItems(self, items) {
+    console.log("onSetItems");
+    return items;
+  }
+
   static editForm(...extend) {
     return Formio.Components.components.select.editForm(
       [
