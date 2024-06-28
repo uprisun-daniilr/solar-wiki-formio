@@ -14,8 +14,6 @@ import { UtilityProviderSelectComponent } from "./components/utility-select.comp
 })();
 
 document.addEventListener("DOMContentLoaded", function () {
-  document.getElementById("myButton").textContent = "New Button Text";
-
   const wizardCancelButtons = document.getElementsByClassName(
     "btn-wizard-nav-cancel"
   );
