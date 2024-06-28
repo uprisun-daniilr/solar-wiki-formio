@@ -13,6 +13,14 @@ import { UtilityProviderSelectComponent } from "./components/utility-select.comp
   );
 })();
 
-$(document).ready(function () {
-  $(".btn-wizard-nav-cancel").text("Reset");
+document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById("myButton").textContent = "New Button Text";
+
+  const wizardCancelButtons = document.getElementsByClassName(
+    "btn-wizard-nav-cancel"
+  );
+
+  if (wizardCancelButtons.length > 0) {
+    wizardCancelButtons.forEach((button) => (button.textContent = "Reset"));
+  }
 });
