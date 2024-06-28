@@ -140,6 +140,8 @@ nav {
 
         >.page-item {
             margin: 4px 0;
+            flex-grow: 1;
+            max-width: 200px;
 
             >.page-link {
                 padding: 14px 28px;
