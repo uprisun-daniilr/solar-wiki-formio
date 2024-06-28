@@ -12,3 +12,7 @@ import { UtilityProviderSelectComponent } from "./components/utility-select.comp
     UtilityProviderSelectComponent
   );
 })();
+
+$(document).ready(function () {
+  $(".btn-wizard-nav-cancel").text("Reset");
+});

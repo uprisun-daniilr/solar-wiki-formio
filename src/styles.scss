@@ -163,13 +163,15 @@ nav {
                 }
             }
 
-            :active {
-                >.page-link {
-                    background-color: #1B4EB2;
-                    border-color: rgba(27, 78, 178, 0.5);
-                }
 
+        }
+
+        >.page-item.active {
+            >.page-link {
+                background-color: #1B4EB2;
+                border-color: rgba(27, 78, 178, 0.5);
             }
+
         }
     }
 }
