@@ -194,3 +194,13 @@ nav {
     padding-left: 15px;
     padding-right: 15px;
 }
+
+.formio-error-wrapper {
+    background-color: inherit;
+    border-color: inherit;
+    padding: 0;
+
+    >label {
+        color: #000000DE;
+    }
+}
