@@ -1,6 +1,8 @@
 if (window.isControllerLoaded) return;
 window.isControllerLoaded = true;
 
+const API_URL = "https://dev-api.solify.dev/api";
+
 self.options.noAlerts = true;
 self.redraw();
 
@@ -10,21 +12,22 @@ const $pricePerWattAfterIncentives = self.getComponent(
 const $totalCostBeforeIncentives = self.getComponent(
   "totalCostBeforeIncentives"
 );
-const $totalCostAfterIncentives = self.getComponent("totalCostAfterIncentives");
-const $incentiveAmount = self.getComponent("incentiveAmount");
-const $incentivesList = self.getComponent("incentivesList");
-const $systemSize = self.getComponent("systemSize");
-const $oneTimePayment = self.getComponent("oneTimePayment");
-const $savingsPeriod = self.getComponent("savingsPeriod");
-const $yearlySavingsBreakdown = self.getComponent("yearlySavingsBreakdown");
-const $monthlyElectricBill = self.getComponent("monthlyElectricBill");
 const $electricityBillWithSolar = self.getComponent("electricityBillWithSolar");
-const $costIncreaseConst = self.getComponent("constantCostIncrease");
-const $totalProducedEnergy = self.getComponent("totalProducedEnergy");
+const $totalCostAfterIncentives = self.getComponent("totalCostAfterIncentives");
 const $annualDegradationRate = self.getComponent("annualDegradationRate");
 const $co2AbsorptionPerTree = self.getComponent("co2AbsorptionPerTree");
-const $treesGrown = self.getComponent("treesGrown");
+const $monthlyElectricBill = self.getComponent("monthlyElectricBill");
+const $savingsCostIncrease = self.getComponent("savingsCostIncrease");
+const $costIncreaseConst = self.getComponent("constantCostIncrease");
+const $totalProducedEnergy = self.getComponent("totalProducedEnergy");
 const $co2EmissionFactor = self.getComponent("co2EmissionFactor");
+const $costWithoutSolar = self.getComponent("costWithoutSolar");
+const $incentiveAmount = self.getComponent("incentiveAmount");
+const $incentivesList = self.getComponent("incentivesList");
+const $oneTimePayment = self.getComponent("oneTimePayment");
+const $savingsPeriod = self.getComponent("savingsPeriod");
+const $systemSize = self.getComponent("systemSize");
+const $treesGrown = self.getComponent("treesGrown");
 const $energyEquivalentPerGallonOfGas = self.getComponent(
   "energyEquivalentPerGallonOfGas"
 );
@@ -34,7 +37,7 @@ const $annualEnergyProductionEstimated = self.getComponent(
   "annualEnergyProductionEstimated"
 );
 
-function calculatePricePerWattAfterIncentives() {
+function calculatePricePerWatt() {
   const afterIncentives = $totalCostAfterIncentives.getValue();
   const systemSize = $systemSize.getValue();
 
@@ -44,6 +47,23 @@ function calculatePricePerWattAfterIncentives() {
   }
 
   $pricePerWattAfterIncentives.setValue(afterIncentives / (systemSize * 1000));
+}
+
+function fetchIncentives(query) {
+  return fetch(`${API_URL}/public/solar_incentives_calculator`, {
+    method: "POST",
+    body: JSON.stringify(query),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      return null;
+    });
 }
 
 function calculateTotalCostAfterIncentives() {
@@ -64,6 +84,54 @@ function calculateTotalCostAfterIncentives() {
   $totalCostAfterIncentives.setValue(
     totalCostBeforeIncentives - incentiveAmounts
   );
+}
+
+function calculateIncentives() {
+  const address = self.getComponent("address").getValue();
+  const utilityProvider = self.getComponent("utilityProvider").getValue();
+  const systemSize = $systemSize.getValue();
+  const totalCostBeforeIncentives = $totalCostBeforeIncentives.getValue();
+
+  let zipCode;
+  if (address) {
+    zipCode = address.address_components.find((el) =>
+      el.types.includes("postal_code")
+    );
+    zipCode = zipCode ? zipCode.short_name : undefined;
+  }
+
+  const query = {
+    zipCode: Number(zipCode),
+    systemSize: Number(systemSize),
+  };
+
+  if (totalCostBeforeIncentives) {
+    query.installationCostUSD = totalCostBeforeIncentives;
+  }
+
+  if (utilityProvider) {
+    query.provider = utilityProvider.company_id;
+  }
+
+  fetchIncentives(query).then(({ incentives }) => {
+    const prevInc = $incentivesList.getValue();
+
+    const newInc = [
+      ...prevInc.filter((inc) => !inc?.incentives?.data?.isDefault),
+      ...incentives.map(({ incentiveCost, incentiveInfo }) => ({
+        incentives: {
+          data: {
+            calculatedIncentiveAmount: incentiveCost,
+            incentive: incentiveInfo.incentiveProgramName,
+            incentiveAmount: incentiveCost,
+            isDefault: true,
+          },
+        },
+      })),
+    ];
+
+    $incentivesList.setValue(newInc);
+  });
 }
 
 function createHandler(fields, callback) {
@@ -98,16 +166,18 @@ function calculateEnvironmentalImpact() {
   savingsPeriod = savingsPeriod ? parseInt(savingsPeriod) : 0;
 
   let totalProducedEnergy = 0;
-  for (let i = 1; i <= savingsPeriod; i++) {
-    if (i === 1) {
+  for (let year = 1; year <= savingsPeriod; year++) {
+    if (year === 1) {
       totalProducedEnergy += annualEnergyProductionEstimated;
       continue;
     }
 
     totalProducedEnergy +=
-      annualEnergyProductionEstimated * (1 - annualDegradationRate);
+      annualEnergyProductionEstimated *
+      Math.pow(1 - annualDegradationRate, year - 1);
   }
-  const tonsOfCo2Avoided = totalProducedEnergy / (co2EmissionFactor * 1000);
+
+  const tonsOfCo2Avoided = totalProducedEnergy * co2EmissionFactor;
 
   $tonsOfCo2Avoided.setValue(tonsOfCo2Avoided);
 
@@ -150,7 +220,7 @@ function calculateCashYears() {
 
     if (i === 1) {
       cumulativeSavings =
-        (monthlyElectricBill - electricityBillWithSolar) * 12 +
+        (monthlyElectricBill - electricityBillWithSolar) * 12 -
         totalCostBeforeIncentives;
     }
 
@@ -179,6 +249,7 @@ function calculateCashYears() {
 }
 
 function calculateLoanYears({ monthlyPayment = 0, termYears = 0 }) {
+  if (!termYears) return [];
   let savingsPeriod = $savingsPeriod.getValue();
   const monthlyElectricBill = $monthlyElectricBill.getValue() || 0;
   const electricityBillWithSolar = $electricityBillWithSolar.getValue() || 0;
@@ -219,11 +290,14 @@ function calculateLoanYears({ monthlyPayment = 0, termYears = 0 }) {
 
 function calculateFinancingOptions() {
   const $financingOptions = self.getComponent("financingOptions");
+  const monthlyElectricBill = $monthlyElectricBill.getValue();
 
   $financingOptions.components.forEach(($financingOption) => {
     if (!$financingOption.getComponent("type")) return;
 
     const type = $financingOption.getComponent("type").getValue();
+    const totalCostAfterIncentives = $totalCostAfterIncentives.getValue() || 0;
+    const electricityBillWithSolar = $electricityBillWithSolar.getValue() || 0;
 
     if (!type) return;
 
@@ -235,33 +309,114 @@ function calculateFinancingOptions() {
       "yearlySavingsBreakdown"
     );
 
-    let yearlySavingsBreakdown;
+    const $costWithoutSolar = $financingOption.getComponent("costWithoutSolar");
+    const $utilityBillWithSolar = $financingOption.getComponent(
+      "utilityBillWithSolar"
+    );
 
+    $costWithoutSolar.setValue(calculateCostWithoutSolar());
+
+    $utilityBillWithSolar.setValue(calculateUtilityBillWithSolar());
+
+    let yearlySavingsBreakdown;
     if (type === "cash") {
       yearlySavingsBreakdown = calculateCashYears();
-    } else if (type === "loan") {
-      if (!termYears) return;
+      const $cashCostWithSolar = $financingOption.getComponent("costWithSolar");
+      const utilityBillWithSolar = $utilityBillWithSolar.getValue();
 
+      $cashCostWithSolar.setValue(
+        totalCostAfterIncentives + utilityBillWithSolar
+      );
+
+      const $paybackPeriodYears =
+        $financingOption.getComponent("paybackPeriodYears");
+
+      const paybackPeriodYears = Math.round(
+        totalCostAfterIncentives /
+          ((monthlyElectricBill - electricityBillWithSolar) * 12)
+      );
+
+      $paybackPeriodYears.setValue(paybackPeriodYears);
+    } else if (type === "loan") {
       yearlySavingsBreakdown = calculateLoanYears({
         monthlyPayment: monthlyPayment,
         termYears: termYears,
       });
+
+      const $loanCostWithSolar = $financingOption.getComponent("costWithSolar");
+      const $totalLoanPayments =
+        $financingOption.getComponent("totalLoanPayments");
+
+      const totalLoanPayments = $totalLoanPayments.getValue || 0;
+
+      $loanCostWithSolar.setValue(totalCostAfterIncentives + totalLoanPayments);
     }
 
-    if (yearlySavingsBreakdown) {
-      $yearlySavingsBreakdown.setValue(yearlySavingsBreakdown);
-    }
+    const $savings = $financingOption.getComponent("savings");
+    const $costWithSolar = $financingOption.getComponent("costWithSolar");
+
+    const costWithoutSolar = $costWithoutSolar.getValue() || 0;
+    const costWithSolar = $costWithSolar.getValue() || 0;
+
+    const savings = costWithoutSolar - costWithSolar;
+
+    $savings.setValue(savings);
+
+    $yearlySavingsBreakdown.setValue(yearlySavingsBreakdown);
   });
+}
+
+function calculateCostWithoutSolar() {
+  let savingsPeriod = $savingsPeriod.getValue();
+
+  if (!savingsPeriod) return;
+
+  const monthlyElectricBill = $monthlyElectricBill.getValue();
+  const savingsCostIncrease = $savingsCostIncrease.getValue();
+
+  savingsPeriod = parseInt(savingsPeriod);
+
+  return calculateTotalCost(
+    monthlyElectricBill,
+    savingsCostIncrease,
+    savingsPeriod
+  );
+}
+
+function calculateUtilityBillWithSolar() {
+  let savingsPeriod = $savingsPeriod.getValue();
+
+  if (!savingsPeriod) return;
+
+  const electricityBillWithSolar = $electricityBillWithSolar.getValue();
+  const savingsCostIncrease = $savingsCostIncrease.getValue();
+
+  savingsPeriod = parseInt(savingsPeriod);
+
+  return calculateTotalCost(
+    electricityBillWithSolar,
+    savingsCostIncrease,
+    savingsPeriod
+  );
+}
+
+function calculateTotalCost(payments, costIncrease, years) {
+  let totalCost = 0;
+
+  for (let year = 1; year <= years; year++) {
+    totalCost += 12 * payments * Math.pow(1 + costIncrease, year - 1);
+  }
+
+  return totalCost;
 }
 
 // Calculate field [Price per Watt(USD) after incentives]
 
-$systemSize.on(
+$systemSize.on("change", createHandler(["systemSize"], calculatePricePerWatt));
+
+$totalCostAfterIncentives.on(
   "change",
-  createHandler(
-    ["totalCostAfterIncentives", "systemSize"],
-    calculatePricePerWattAfterIncentives
-  )
+  createHandler(["totalCostAfterIncentives"], calculatePricePerWatt)
 );
 
 // Calculate field [Total cost after incentives]
@@ -277,6 +432,11 @@ $totalCostBeforeIncentives.on(
 $totalCostBeforeIncentives.on("change", () => {
   $oneTimePayment.setValue($totalCostBeforeIncentives.getValue());
 });
+
+$totalCostBeforeIncentives.on(
+  "change",
+  createHandler(["totalCostBeforeIncentives"], calculateIncentives)
+);
 
 $savingsPeriod.on(
   "change",
@@ -302,6 +462,30 @@ $savingsPeriod.on(
     ],
     calculateFinancingOptions
   )
+);
+
+$savingsPeriod.on(
+  "change",
+  createHandler(["monthlyPayment"], ({ changed }) => {
+    const root = changed.instance.localRoot;
+
+    const $yearlySavingsBreakdown = root.getComponent("yearlySavingsBreakdown");
+    const $termYears = root.getComponent("termYears");
+
+    const years = calculateLoanYears({
+      monthlyPayment: changed.instance.getValue(),
+      termYears: $termYears.getValue(),
+    });
+
+    $yearlySavingsBreakdown.setValue(years);
+  })
+);
+
+$systemSize.on(
+  "change",
+  createHandler(["systemSize"], ({ changed }) => {
+    calculateIncentives();
+  })
 );
 
 $oneTimePayment.on(
