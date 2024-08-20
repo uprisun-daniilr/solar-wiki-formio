@@ -1,3 +1,4 @@
+console.log({ form, instance });
 if (window.isControllerLoaded) return;
 window.isControllerLoaded = true;
 
@@ -24,6 +25,9 @@ const $co2EmissionFactor = self.getComponent("co2EmissionFactor");
 const $costWithoutSolar = self.getComponent("costWithoutSolar");
 const $incentiveAmount = self.getComponent("incentiveAmount");
 const $incentivesList = self.getComponent("incentivesList");
+const $pricePerWattBeforeIncentives = self.getComponent(
+  "pricePerWattBeforeIncentives"
+);
 const $oneTimePayment = self.getComponent("oneTimePayment");
 const $savingsPeriod = self.getComponent("savingsPeriod");
 const $systemSize = self.getComponent("systemSize");
@@ -108,6 +112,9 @@ function calculateIncentives() {
     query.provider = utilityProvider.company_id;
   }
 
+  if (!query.systemSize) return;
+  if (!query.installationCostUSD) return;
+
   fetchIncentives(query)
     .then(({ incentives }) => {
       const prevInc = $incentivesList.getValue();
@@ -127,6 +134,8 @@ function calculateIncentives() {
       ];
 
       $incentivesList.setValue(newInc);
+
+      calculateTotalCostAfterIncentives();
     })
     .catch((error) => {
       console.error("Error:", error);
@@ -425,6 +434,16 @@ function calculateCostWithoutSolar() {
   );
 }
 
+function calculatePricePerWattBeforeIncentives() {
+  const totalCostBeforeIncentives = $totalCostBeforeIncentives.getValue() || 0;
+  const systemSize = $systemSize.getValue() || 0;
+
+  const pricePerWattBeforeIncentives =
+    totalCostBeforeIncentives / (systemSize * 1000);
+
+  $pricePerWattBeforeIncentives.setValue(pricePerWattBeforeIncentives);
+}
+
 function calculateUtilityBillWithSolar() {
   let savingsPeriod = $savingsPeriod.getValue();
 
@@ -464,10 +483,10 @@ $totalCostAfterIncentives.on(
 // Calculate field [Total cost after incentives]
 $totalCostBeforeIncentives.on(
   "change",
-  createHandler(
-    ["totalCostBeforeIncentives", "incentiveAmount"],
-    calculateTotalCostAfterIncentives
-  )
+  createHandler(["totalCostBeforeIncentives", "incentiveAmount"], () => {
+    calculateTotalCostAfterIncentives();
+    calculatePricePerWattBeforeIncentives();
+  })
 );
 
 // Calculate field [One-time payment (USD), numeric only]
@@ -502,7 +521,9 @@ $savingsPeriod.on(
       "type",
       "estimatedSavingsGraph",
     ],
-    calculateFinancingOptions
+    () => {
+      calculateFinancingOptions();
+    }
   )
 );
 
@@ -527,6 +548,7 @@ $systemSize.on(
   "change",
   createHandler(["systemSize"], ({ changed }) => {
     calculateIncentives();
+    calculatePricePerWattBeforeIncentives();
   })
 );
 
