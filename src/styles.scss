@@ -76,9 +76,14 @@
 
 .formio-button-remove-row {
     min-width: auto;
-    font-size: 24px;
-    padding: 12px 16px;
+    font-size: 28px;
+    padding: 8px 12px;
     margin: 0;
+    display: block;
+
+    &:hover {
+        box-shadow: none;
+    }
 }
 
 .formio-component-modal-wrapper-form>div {

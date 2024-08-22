@@ -1,11 +1,17 @@
-console.log({ form, instance });
 if (window.isControllerLoaded) return;
 window.isControllerLoaded = true;
 
-const API_URL = "https://dev-api.solify.dev/api";
+const API_URL = "https://stage-api.solify.dev/api";
 
 self.options.noAlerts = true;
 self.redraw();
+
+const getMonthlyBill = () =>
+  data?.application?.data?.utility?.data?.monthlyElectricBill || 0;
+
+const getAddress = () => data?.application?.data?.address?.data?.address || "";
+const getUtilityProvider = () =>
+  data?.application?.data?.utility?.data?.utilityProvider || "";
 
 const $pricePerWattAfterIncentives = self.getComponent(
   "pricePerWattAfterIncentives"
@@ -17,7 +23,6 @@ const $electricityBillWithSolar = self.getComponent("electricityBillWithSolar");
 const $totalCostAfterIncentives = self.getComponent("totalCostAfterIncentives");
 const $annualDegradationRate = self.getComponent("annualDegradationRate");
 const $co2AbsorptionPerTree = self.getComponent("co2AbsorptionPerTree");
-const $monthlyElectricBill = self.getComponent("monthlyElectricBill");
 const $savingsCostIncrease = self.getComponent("savingsCostIncrease");
 const $costIncreaseConst = self.getComponent("constantCostIncrease");
 const $totalProducedEnergy = self.getComponent("totalProducedEnergy");
@@ -86,8 +91,8 @@ function calculateTotalCostAfterIncentives() {
 }
 
 function calculateIncentives() {
-  const address = self.getComponent("address").getValue();
-  const utilityProvider = self.getComponent("utilityProvider").getValue();
+  const address = getAddress();
+  const utilityProvider = getUtilityProvider();
   const systemSize = $systemSize.getValue();
   const totalCostBeforeIncentives = $totalCostBeforeIncentives.getValue();
 
@@ -120,7 +125,12 @@ function calculateIncentives() {
       const prevInc = $incentivesList.getValue();
 
       const newInc = [
-        ...prevInc.filter((inc) => !inc?.incentives?.data?.isDefault),
+        ...prevInc.filter(
+          (inc) =>
+            !inc?.incentives?.data?.isDefault &&
+            inc?.incentives?.data?.incentive &&
+            inc?.incentives?.data?.incentiveAmount
+        ),
         ...incentives.map(({ incentiveCost, incentiveInfo }) => ({
           incentives: {
             data: {
@@ -199,7 +209,7 @@ function calculateEnvironmentalImpact() {
 
 function calculateCashYears() {
   let savingsPeriod = $savingsPeriod.getValue();
-  const monthlyElectricBill = $monthlyElectricBill.getValue() || 0;
+  const monthlyElectricBill = getMonthlyBill();
   const electricityBillWithSolar = $electricityBillWithSolar.getValue() || 0;
   const totalCostBeforeIncentives = $totalCostBeforeIncentives.getValue() || 0;
   const costIncreaseConst = $costIncreaseConst.getValue();
@@ -264,7 +274,7 @@ function calculateLoanYears({
 }) {
   if (!termYears) return [];
   let savingsPeriod = $savingsPeriod.getValue();
-  const monthlyElectricBill = $monthlyElectricBill.getValue() || 0;
+  const monthlyElectricBill = getMonthlyBill();
   const electricityBillWithSolar = $electricityBillWithSolar.getValue() || 0;
   const costIncreaseConst = $costIncreaseConst.getValue();
 
@@ -311,7 +321,7 @@ function calculateLoanYears({
 
 function calculateFinancingOptions() {
   const $financingOptions = self.getComponent("financingOptions");
-  const monthlyElectricBill = $monthlyElectricBill.getValue();
+  const monthlyElectricBill = getMonthlyBill();
 
   $financingOptions.components.forEach(($financingOption) => {
     if (!$financingOption.getComponent("type")) return;
@@ -371,7 +381,7 @@ function calculateFinancingOptions() {
       const $totalLoanPayments =
         $financingOption.getComponent("totalLoanPayments");
 
-      const totalLoanPayments = $totalLoanPayments.getValue || 0;
+      const totalLoanPayments = $totalLoanPayments.getValue() || 0;
 
       $loanCostWithSolar.setValue(totalLoanPayments + utilityBillWithSolar);
     }
@@ -422,7 +432,7 @@ function calculateCostWithoutSolar() {
 
   if (!savingsPeriod) return;
 
-  const monthlyElectricBill = $monthlyElectricBill.getValue();
+  const monthlyElectricBill = getMonthlyBill();
   const savingsCostIncrease = $savingsCostIncrease.getValue();
 
   savingsPeriod = parseInt(savingsPeriod);
@@ -469,6 +479,21 @@ function calculateTotalCost(payments, costIncrease, years) {
   }
 
   return totalCost;
+}
+
+function calculateSavings({ changed }) {
+  const $root = changed.instance.localRoot;
+
+  const $savings = $root.getComponent("savings");
+  const $costWithSolar = $root.getComponent("costWithSolar");
+  const $costWithoutSolar = $root.getComponent("costWithoutSolar");
+
+  const costWithoutSolar = $costWithoutSolar.getValue() || 0;
+  const costWithSolar = $costWithSolar.getValue() || 0;
+
+  const savings = costWithoutSolar - costWithSolar;
+
+  $savings.setValue(savings);
 }
 
 // Calculate field [Price per Watt(USD) after incentives]
@@ -570,3 +595,109 @@ $savingsPeriod.on(
     calculateTotalLoanPayments
   )
 );
+
+self.getComponent("utilityBillWithSolar").on(
+  "change",
+  createHandler(["utilityBillWithSolar"], ({ changed }) => {
+    const $root = changed.instance.localRoot;
+    const $rootParent = $root.parent.parent;
+
+    const type = $rootParent.getComponent("type").getValue();
+
+    if (!type) return;
+
+    const $utilityBillWithSolar = $root.getComponent("utilityBillWithSolar");
+
+    const utilityBillWithSolar = $utilityBillWithSolar.getValue();
+    if (type === "loan") {
+      const $loanCostWithSolar = $root.getComponent("costWithSolar");
+
+      const $totalLoanPayments = $rootParent.getComponent("totalLoanPayments");
+
+      const totalLoanPayments = $totalLoanPayments.getValue() || 0;
+
+      $loanCostWithSolar.setValue(totalLoanPayments + utilityBillWithSolar);
+    }
+  })
+);
+
+self.getComponent("totalLoanPayments").on(
+  "change",
+  createHandler(["totalLoanPayments"], ({ changed }) => {
+    const $root = changed.instance.localRoot;
+
+    const type = $root.getComponent("type").getValue();
+
+    if (!type) return;
+
+    const $utilityBillWithSolar = $root.getComponent("utilityBillWithSolar");
+
+    const utilityBillWithSolar = $utilityBillWithSolar.getValue();
+    if (type === "loan") {
+      const $loanCostWithSolar = $root.getComponent("costWithSolar");
+
+      const $totalLoanPayments = $root.getComponent("totalLoanPayments");
+
+      const totalLoanPayments = $totalLoanPayments.getValue() || 0;
+
+      $loanCostWithSolar.setValue(totalLoanPayments + utilityBillWithSolar);
+    }
+  })
+);
+
+self
+  .getComponent("costWithSolar")
+  .on("change", createHandler(["costWithSolar"], calculateSavings));
+
+self
+  .getComponent("costWithoutSolar")
+  .on("change", createHandler(["costWithoutSolar"], calculateSavings));
+
+self
+  .getComponent("downPayment")
+  .on("change", createHandler(["downPayment"], calculateLoanSavingsBreakdown));
+
+self
+  .getComponent("termYears")
+  .on("change", createHandler(["termYears"], calculateLoanSavingsBreakdown));
+
+self
+  .getComponent("monthlyPayment")
+  .on(
+    "change",
+    createHandler(["monthlyPayment"], calculateLoanSavingsBreakdown)
+  );
+
+function calculateLoanSavingsBreakdown({ changed }) {
+  const $financingOption = changed.instance.localRoot;
+
+  if (!$financingOption.getComponent("type")) return;
+
+  const type = $financingOption.getComponent("type").getValue();
+
+  const downPayment = $financingOption.getComponent("downPayment").getValue();
+
+  if (!type) return;
+
+  const termYears = $financingOption.getComponent("termYears").getValue();
+
+  const monthlyPayment = $financingOption
+    .getComponent("monthlyPayment")
+    .getValue();
+
+  const $yearlySavingsBreakdown = $financingOption.getComponent(
+    "yearlySavingsBreakdown"
+  );
+
+  let yearlySavingsBreakdown;
+
+  if (type === "loan") {
+    yearlySavingsBreakdown = calculateLoanYears({
+      monthlyPayment: monthlyPayment,
+      termYears: termYears,
+      downPayment,
+    });
+
+    $yearlySavingsBreakdown.setValue(yearlySavingsBreakdown);
+  }
+}
