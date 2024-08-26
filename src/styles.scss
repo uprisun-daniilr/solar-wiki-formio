@@ -85,7 +85,9 @@
         box-shadow: none;
 
         >i {
-            box-shadow: none;
+            &:hover {
+                box-shadow: none;
+            }
         }
     }
 
