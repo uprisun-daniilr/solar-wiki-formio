@@ -83,7 +83,12 @@
 
     &:hover {
         box-shadow: none;
+
+        >i {
+            box-shadow: none;
+        }
     }
+
 }
 
 .formio-component-modal-wrapper-form>div {
